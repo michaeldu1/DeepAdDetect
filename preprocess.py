@@ -20,6 +20,7 @@ def find_min_dimensions():
   return (min_width, min_height)
 
 def resize_images(width, height):
+  os.mkdir('./data-resized')
   for folder in list(range(11)) + ["resnet_training_negatives"]:
     curr_path = "./data/" + str(folder) + "/*.jpg"
     new_dest = "./data-resized/" + str(folder) + "-resized/"
