@@ -1,20 +1,34 @@
+import glob
 from PIL import ImageFile, Image
+import os
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-import glob
 
-min_width, min_height = float('inf'), float('inf')
+def find_min_dimensions():
+  min_width, min_height = float('inf'), float('inf')
+  for folder in list(range(11)) + ["resnet_training_negatives"]:
+    curr_path = "./data/" + str(folder) + "/*.jpg"
+    print(curr_path)
+    for img_path in glob.glob(curr_path):
+      im = Image.open(img_path)
+      width, height = im.size
+      min_width = min(min_width, width)
+      min_height = min(min_height, height)
 
-ct = 0
-for img_path in glob.glob("./data/0/*.jpg"):
-  # print(ct)
-  ct += 1
-  im = Image.open(img_path)
-  new_img = im.resize((257, 257))
-  new_img.save('./data-resized/0-resized/' + img_path[9:], im.format)
-  # width, height = im.size
-  # min_width = min(min_width, width)
-  # min_height = min(min_height, height)
+  print("min widht", min_width)
+  print("min height", min_height)
+  return (min_width, min_height)
 
-print("min widht", min_width)
-print("min height", min_height)
+def resize_images(width, height):
+  for folder in list(range(11)) + ["resnet_training_negatives"]:
+    curr_path = "./data/" + str(folder) + "/*.jpg"
+    new_dest = "./data-resized/" + str(folder) + "-resized/"
+    os.mkdir(new_dest)
+    print(curr_path)
+    for img_path in glob.glob(curr_path):
+      im = Image.open(img_path)
+      new_img = im.resize((width, height))
+      new_img.save(new_dest + img_path[9:], im.format)
+
+# min_width, min_height = find_min_dimensions()
+resize_images(256, 256)
